@@ -1,0 +1,63 @@
+module Koupon where
+
+
+template SendPoints 
+    with
+        supermarket : Party
+        customer : Party
+        points_sent : Int
+        balance : Int
+
+    where 
+        signatory supermarket
+        observer customer
+
+        controller supermarket can 
+            Send 
+                : ContractId SendPoints
+                with
+                    receiver : Party
+                    points_to_send : Int
+
+                do
+                    let 
+                        new_balance = balance + points_to_send
+
+                    create this with
+                        customer = receiver
+                        points_sent = points_to_send
+                        balance = new_balance
+
+        controller customer can
+            TransferPoints
+                :ContractId Transfer
+                with 
+                    receiver_ : Party
+                    amount_ : Int
+                
+                do
+                    let 
+                        new_new_balance = balance - amount_
+
+                    create this with
+                        balance = new_new_balance
+
+
+                    create Transfer with
+                        giver = customer
+                        receiver__ = receiver_
+                        amount = amount_
+                        balance = new_new_balance
+
+
+
+template Transfer 
+    with
+        giver : Party
+        receiver__ : Party
+        amount : Int
+        balance : Int
+
+    where
+        signatory giver
+        observer receiver__
