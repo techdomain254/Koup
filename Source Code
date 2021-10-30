@@ -1,6 +1,6 @@
 module Koupon where
 
-
+--main contract template that the supermarket uses to send points to its customers
 template SendPoints 
     with
         supermarket : Party
@@ -12,6 +12,7 @@ template SendPoints
         signatory supermarket
         observer customer
 
+--first choice where supermarket can send points
         controller supermarket can 
             Send 
                 : ContractId SendPoints
@@ -28,6 +29,8 @@ template SendPoints
                         points_sent = points_to_send
                         balance = new_balance
 
+--second choice where a customer can transfer points to his/her friends/relatives
+--returns the contractId Transfer
         controller customer can
             TransferPoints
                 :ContractId Transfer
@@ -50,7 +53,7 @@ template SendPoints
                         balance = new_new_balance
 
 
-
+--contract template for transfering points from one contract to another
 template Transfer 
     with
         giver : Party
